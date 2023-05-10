@@ -1,5 +1,6 @@
 var builder = WebApplication.CreateBuilder(args);
 
+// Add Orleans (co-host)
 builder.Services.AddOrleans(config =>
 {
     config.UseLocalhostClustering();
