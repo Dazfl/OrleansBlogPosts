@@ -1,4 +1,4 @@
-﻿namespace OrleansBlogPosts.Api.Data
+﻿namespace OrleansBlogPosts.Api.Models
 {
     /// <summary>
     /// Blog Post object.

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using OrleansBlogPosts.Api.Data;
-using OrleansBlogPosts.Api.Grains;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using OrleansBlogPosts.Api.Features.BlogPosts.Commands;
+using OrleansBlogPosts.Api.Features.BlogPosts.Queries;
+using OrleansBlogPosts.Api.Models;
 
 namespace OrleansBlogPosts.Api.Controllers
 {
@@ -8,25 +10,29 @@ namespace OrleansBlogPosts.Api.Controllers
     [ApiController]
     public class BlogPostsController : ControllerBase
     {
-        private readonly IGrainFactory _grainFactory;
+        private readonly IMediator _bus;
 
-        public BlogPostsController(IGrainFactory grainFactory)
+        public BlogPostsController(IMediator bus)
         {
-            _grainFactory = grainFactory;
+            _bus = bus;
         }
 
         [HttpGet]
-        public async Task<HashSet<BlogPost>> GetBlogPosts(CancellationToken cancellationToken)
+        public async Task<IQueryable<BlogPost>> GetBlogPosts(CancellationToken cancellationToken)
         {
-            var blogPosts = _grainFactory.GetGrain<IBlogPostsIndexGrain>(0);
-            return await blogPosts.GetBlogPosts();
+            return await _bus.Send(new GetBlogPosts.Query(), cancellationToken);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<BlogPost> GetBlogById(long id, CancellationToken cancellationToken)
+        {
+            return await _bus.Send(new GetBlogPostById.Query(id), cancellationToken);
         }
 
         [HttpPost]
-        public Task AddBlogPost(BlogPost blogPost, CancellationToken cancellationToken)
+        public async Task<CreateBlogPost.CreateResponse> CreateBlogPost(BlogPost blogPost, CancellationToken cancellationToken)
         {
-            var blogPostGrain = _grainFactory.GetGrain<IBlogPostGrain>(blogPost.Id);
-            return blogPostGrain.CreateBlogPostAsync(blogPost);
+            return await _bus.Send(new CreateBlogPost.Command(blogPost), cancellationToken);
         }
     }
 }

@@ -1,3 +1,5 @@
+using OrleansBlogPosts.Api.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add Orleans (co-host)
@@ -8,6 +10,7 @@ builder.Services.AddOrleans(config =>
 });
 
 // Add services to the container.
+builder.Services.AddMediatR(config => config.RegisterServicesFromAssemblyContaining(typeof(BlogPost)));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

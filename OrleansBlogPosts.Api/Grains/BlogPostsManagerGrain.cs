@@ -1,24 +1,24 @@
 ﻿using Orleans.Runtime;
-using OrleansBlogPosts.Api.Data;
+using OrleansBlogPosts.Api.Models;
 
 namespace OrleansBlogPosts.Api.Grains
 {
-    public interface IBlogPostsIndexGrain : IGrainWithIntegerKey
+    public interface IBlogPostsManagerGrain : IGrainWithIntegerKey
     {
         public Task<HashSet<BlogPost>> GetBlogPosts();
 
-        public Task AddToIndex(BlogPost blogPost);
+        public Task CreateBlogPost(BlogPost blogPost);
     }
 
     /// <summary>
     /// Blog Post index grain
     /// </summary>
-    public class BlogPostsIndexGrain : Grain, IBlogPostsIndexGrain
+    public class BlogPostsManagerGrain : Grain, IBlogPostsManagerGrain
     {
         private readonly IPersistentState<HashSet<long>> _blogPostIds;
         private readonly HashSet<BlogPost> _blogPosts = new();
 
-        public BlogPostsIndexGrain([PersistentState(stateName: "BlogPostsIndexState", storageName: "BlogPostsStorage")] IPersistentState<HashSet<long>> state)
+        public BlogPostsManagerGrain([PersistentState(stateName: "BlogPostsIndexState", storageName: "BlogPostsStorage")] IPersistentState<HashSet<long>> state)
         {
             _blogPostIds = state;
         }
@@ -38,14 +38,14 @@ namespace OrleansBlogPosts.Api.Grains
                 async (id, cancellationToken) =>
                 {
                     var blogPostGrain = GrainFactory.GetGrain<IBlogPostGrain>(id);
-                    _blogPosts.Add(await blogPostGrain.GetBlogPost());
+                    _blogPosts.Add(await blogPostGrain.GetAsync());
                 });
         }
 
         /// <summary>
         /// Add a blog post id to the index.
         /// </summary>
-        public Task AddToIndex(BlogPost blogPost)
+        public async Task CreateBlogPost(BlogPost blogPost)
         {
             // Add the blog post id
             _blogPostIds.State ??= new();
@@ -54,8 +54,12 @@ namespace OrleansBlogPosts.Api.Grains
             // Add the blog post to the list
             _blogPosts.Add(blogPost);
 
-            // Save
-            return _blogPostIds.WriteStateAsync();
+            // Save state
+            await _blogPostIds.WriteStateAsync();
+
+            // Create a single Blog Post grain
+            var blogPostGrain = GrainFactory.GetGrain<IBlogPostGrain>(blogPost.Id);
+            await blogPostGrain.CreateAsync(blogPost);
         }
 
         /// <summary>

@@ -1,13 +1,13 @@
 ﻿using Orleans.Runtime;
-using OrleansBlogPosts.Api.Data;
+using OrleansBlogPosts.Api.Models;
 
 namespace OrleansBlogPosts.Api.Grains
 {
     public interface IBlogPostGrain : IGrainWithIntegerKey
     {
-        public Task CreateBlogPostAsync(BlogPost newBlogPost);
+        public Task CreateAsync(BlogPost newBlogPost);
 
-        public Task<BlogPost> GetBlogPost();
+        public Task<BlogPost> GetAsync();
     }
 
     /// <summary>
@@ -25,21 +25,17 @@ namespace OrleansBlogPosts.Api.Grains
         /// <summary>
         /// Create a new blog post
         /// </summary>
-        public async Task CreateBlogPostAsync(BlogPost newBlogPost)
+        public async Task CreateAsync(BlogPost newBlogPost)
         {
             // Save the blog post to state
             _state.State = newBlogPost;
             await _state.WriteStateAsync();
-
-            // Add the blog post to the index (index grain id is default 0)
-            var blogPosts = GrainFactory.GetGrain<IBlogPostsIndexGrain>(0);
-            await blogPosts.AddToIndex(newBlogPost);
         }
 
         /// <summary>
         /// Retrieve the blog post
         /// </summary>
-        public Task<BlogPost> GetBlogPost()
+        public Task<BlogPost> GetAsync()
         {
             var blogPost = _state.State;
             return Task.FromResult(blogPost);
