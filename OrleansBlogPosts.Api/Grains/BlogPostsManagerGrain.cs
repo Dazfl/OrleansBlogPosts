@@ -6,6 +6,7 @@ namespace OrleansBlogPosts.Api.Grains
     public interface IBlogPostsManagerGrain : IGrainWithIntegerKey
     {
         public Task<HashSet<BlogPost>> GetBlogPosts();
+        public Task<BlogPost?> GetBlogPostBySlug(string slug);
 
         public Task CreateBlogPost(BlogPost blogPost);
     }
@@ -68,6 +69,14 @@ namespace OrleansBlogPosts.Api.Grains
         public Task<HashSet<BlogPost>> GetBlogPosts()
         {
             return Task.FromResult(_blogPosts);
+        }
+
+        /// <summary>
+        /// Return a Blog Post that matches the supplied slug
+        /// </summary>
+        public Task<BlogPost?> GetBlogPostBySlug(string slug)
+        {
+            return Task.FromResult(_blogPosts.FirstOrDefault(x => x.Slug.Equals(slug)));
         }
     }
 }

@@ -5,14 +5,14 @@ using OrleansBlogPosts.Api.Models;
 namespace OrleansBlogPosts.Api.Features.BlogPosts.Queries
 {
     /// <summary>
-    /// Query to retrieve a blog post by id
+    /// Query to retrieve a blog post by slug
     /// </summary>
-    public static class GetBlogPostById
+    public static class GetBlogPostBySlug
     {
         /// <summary>
         /// Query request
         /// </summary>
-        public record Query(long Id) : IRequest<BlogPost>;
+        public record Query(string Slug) : IRequest<BlogPost>;
 
         /// <summary>
         /// Query handler
@@ -26,10 +26,10 @@ namespace OrleansBlogPosts.Api.Features.BlogPosts.Queries
                 _grainFactory = grainFactory;
             }
 
-            public async Task<BlogPost> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<BlogPost?> Handle(Query request, CancellationToken cancellationToken)
             {
-                var blogPostGrain = _grainFactory.GetGrain<IBlogPostGrain>(request.Id);
-                return await blogPostGrain.GetAsync();
+                var blogPostManager = _grainFactory.GetGrain<IBlogPostsManagerGrain>(0);
+                return await blogPostManager.GetBlogPostBySlug(request.Slug);
             }
         }
     }

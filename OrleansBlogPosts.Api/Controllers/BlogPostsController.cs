@@ -23,10 +23,16 @@ namespace OrleansBlogPosts.Api.Controllers
             return await _bus.Send(new GetBlogPosts.Query(), cancellationToken);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("ById/{id}")]
         public async Task<BlogPost> GetBlogById(long id, CancellationToken cancellationToken)
         {
             return await _bus.Send(new GetBlogPostById.Query(id), cancellationToken);
+        }
+
+        [HttpGet("BySlug/{slug}")]
+        public async Task<BlogPost> GetBlogBySlug(string slug, CancellationToken cancellationToken)
+        {
+            return await _bus.Send(new GetBlogPostBySlug.Query(slug), cancellationToken);
         }
 
         [HttpPost]

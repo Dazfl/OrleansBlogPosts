@@ -13,6 +13,7 @@
     {
         public long Id { get; set; }
         public string Title { get; set; }
+        public string Slug { get; set; }
         public DateTime? Published { get; set; }
         public ICollection<string> Tags { get; set; } = new HashSet<string>();
 
