@@ -1,5 +1,4 @@
-﻿using Orleans.Runtime;
-using OrleansBlogPosts.Api.Models;
+﻿using OrleansBlogPosts.Api.Models;
 
 namespace OrleansBlogPosts.Api.Grains
 {
@@ -13,20 +12,18 @@ namespace OrleansBlogPosts.Api.Grains
     /// <summary>
     /// Blog post gain
     /// </summary>
-    public class BlogPostGrain : Grain, IBlogPostGrain
+    public class BlogPostGrain([PersistentState(stateName: "BlogPostsState", storageName: "grain-storage")] IPersistentState<BlogPost> state) : Grain, IBlogPostGrain
     {
-        private readonly IPersistentState<BlogPost> _state;
-
-        public BlogPostGrain([PersistentState(stateName: "BlogPostsState", storageName: "BlogPostsStorage")] IPersistentState<BlogPost> state)
-        {
-            _state = state;
-        }
+        private readonly IPersistentState<BlogPost> _state = state;
 
         /// <summary>
         /// Create a new blog post
         /// </summary>
         public async Task CreateAsync(BlogPost newBlogPost)
         {
+            var grainId = this.GetGrainId();
+            newBlogPost.Id = grainId.GetIntegerKey();
+
             // Save the blog post to state
             _state.State = newBlogPost;
             await _state.WriteStateAsync();

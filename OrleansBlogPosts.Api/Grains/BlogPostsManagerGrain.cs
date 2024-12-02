@@ -1,5 +1,4 @@
-﻿using Orleans.Runtime;
-using OrleansBlogPosts.Api.Models;
+﻿using OrleansBlogPosts.Api.Models;
 
 namespace OrleansBlogPosts.Api.Grains
 {
@@ -19,7 +18,7 @@ namespace OrleansBlogPosts.Api.Grains
         private readonly IPersistentState<HashSet<long>> _blogPostIds;
         private readonly HashSet<BlogPost> _blogPosts = new();
 
-        public BlogPostsManagerGrain([PersistentState(stateName: "BlogPostsIndexState", storageName: "BlogPostsStorage")] IPersistentState<HashSet<long>> state)
+        public BlogPostsManagerGrain([PersistentState(stateName: "BlogPostsIndexState", storageName: "grain-storage")] IPersistentState<HashSet<long>> state)
         {
             _blogPostIds = state;
         }

@@ -17,19 +17,14 @@ namespace OrleansBlogPosts.Api.Features.BlogPosts.Commands
         /// <summary>
         /// Command handler
         /// </summary>
-        public sealed class CommandHandler : IRequestHandler<Command, CreateResponse>
+        public sealed class CommandHandler(IGrainFactory grainFactory, IClusterClient clusterClient) : IRequestHandler<Command, CreateResponse>
         {
-            private readonly IGrainFactory _grainFactory;
-
-            public CommandHandler(IGrainFactory grainFactory)
-            {
-                _grainFactory = grainFactory;
-            }
-
             public async Task<CreateResponse> Handle(Command request, CancellationToken cancellationToken)
             {
-                var blogPostManager = _grainFactory.GetGrain<IBlogPostsManagerGrain>(0);
-                await blogPostManager.CreateBlogPost(request.BlogPost);
+                var blogPostManager = clusterClient.GetGrain<IBlogPostGrain>(0);
+                //var blogPostManager = grainFactory.GetGrain<IBlogPostsManagerGrain>(0);
+                //await blogPostManager.CreateBlogPost(request.BlogPost);
+                await blogPostManager.CreateAsync(request.BlogPost);
 
                 return new CreateResponse(true, request.BlogPost.Id);
             }
