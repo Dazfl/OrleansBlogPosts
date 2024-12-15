@@ -4,38 +4,39 @@ namespace OrleansBlogPosts.Api.Grains
 {
     public interface IBlogPostGrain : IGrainWithIntegerKey
     {
-        public Task CreateAsync(BlogPost newBlogPost);
+        Task CreateBlogPost(string title, string slug, DateTime published);
 
-        public Task<BlogPost> GetAsync();
+        Task AddTags(params List<string> tags);
+
     }
 
-    /// <summary>
-    /// Blog post gain
-    /// </summary>
-    public class BlogPostGrain([PersistentState(stateName: "BlogPostsState", storageName: "grain-storage")] IPersistentState<BlogPost> state) : Grain, IBlogPostGrain
+    public class BlogPostGrain : IBlogPostGrain
     {
-        private readonly IPersistentState<BlogPost> _state = state;
+        private BlogPost _blogPost;
 
-        /// <summary>
-        /// Create a new blog post
-        /// </summary>
-        public async Task CreateAsync(BlogPost newBlogPost)
+        public Task CreateBlogPost(string title, string slug, DateTime published)
         {
-            var grainId = this.GetGrainId();
-            newBlogPost.Id = grainId.GetIntegerKey();
+            _blogPost = new()
+            {
+                Title = title,
+                Slug = slug,
+                Published = published
+            };
 
-            // Save the blog post to state
-            _state.State = newBlogPost;
-            await _state.WriteStateAsync();
+            return Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Retrieve the blog post
-        /// </summary>
-        public Task<BlogPost> GetAsync()
+        public Task AddTags(params List<string> tags)
         {
-            var blogPost = _state.State;
-            return Task.FromResult(blogPost);
+            if (_blogPost is null || _blogPost.Tags is null)
+                return Task.CompletedTask;
+
+            foreach (var tag in tags)
+            {
+                _blogPost.Tags.Add(tag);
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

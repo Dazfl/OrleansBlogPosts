@@ -1,21 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Aspire.StackExchange.Redis" Version="9.0.0" />
-    <PackageReference Include="MediatR" Version="12.4.1" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Orleans.Clustering.Redis" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Orleans.Core" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Orleans.Persistence.Redis" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Orleans.Server" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Orleans.Streaming" Version="9.0.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.1.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OrleansBlogPosts.ServiceDefaults\OrleansBlogPosts.ServiceDefaults.csproj" />
-  </ItemGroup>
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Aspire.StackExchange.Redis" Version="9.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Orleans.Clustering.Redis" Version="9.0.1" />
+		<PackageReference Include="Microsoft.Orleans.Core" Version="9.0.1" />
+		<PackageReference Include="Microsoft.Orleans.Persistence.Redis" Version="9.0.1" />
+		<PackageReference Include="Microsoft.Orleans.Server" Version="9.0.1" />
+		<PackageReference Include="Microsoft.Orleans.Streaming" Version="9.0.1" />
+		<PackageReference Include="OrleansDashboard" Version="8.2.0" />
+		<PackageReference Include="Scalar.AspNetCore" Version="1.2.55" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\OrleansBlogPosts.ServiceDefaults\OrleansBlogPosts.ServiceDefaults.csproj" />
+	</ItemGroup>
+
 </Project>
