@@ -15,7 +15,7 @@
 		<PackageReference Include="Microsoft.Orleans.Server" Version="9.0.1" />
 		<PackageReference Include="Microsoft.Orleans.Streaming" Version="9.0.1" />
 		<PackageReference Include="OrleansDashboard" Version="8.2.0" />
-		<PackageReference Include="Scalar.AspNetCore" Version="1.2.55" />
+		<PackageReference Include="Scalar.AspNetCore" Version="1.2.72" />
 	</ItemGroup>
 
 	<ItemGroup>
